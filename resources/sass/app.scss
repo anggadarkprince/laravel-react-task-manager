@@ -1,0 +1,22 @@
+$body-bg: #fcfcfc;
+$body-color: #2d3535;
+$border-radius: 0.2rem;
+$border-radius-sm: 0.1rem;
+$input-placeholder-color: #bbbbbb;
+
+@import url("~@mdi/font/css/materialdesignicons.css");
+@import url('https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap');
+@import "node_modules/bootstrap/scss/bootstrap";
+
+html, body {
+    font-family: Roboto, sans-serif;
+}
+
+.has-sticky-footer {
+    margin-bottom: 80px; /* Margin bottom by footer height */
+}
+
+.sticky-footer {
+    background-color: #f5f5f5;
+    width: 100%;
+}
