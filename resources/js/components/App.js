@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
-import ProjectsList from './ProjectsList'
-import NewProject from './NewProject'
-import SingleProject from './SingleProject'
+import Projects from './Projects'
+import Help from './statics/Help'
+import Terms from './statics/Terms'
 
 class App extends Component {
     render () {
@@ -14,8 +14,10 @@ class App extends Component {
                 <Header />
                 <div className='container py-4' style={{minHeight: 'calc(100vh - 175px)'}}>
                     <Switch>
-                        <Route exact path='/' component={ProjectsList} />
-                        <Route path='/projects' component={ProjectsList} />
+                        <Route exact path='/' component={Projects} />
+                        <Route path='/projects' component={Projects} />
+                        <Route path='/help' component={Help} />
+                        <Route path='/terms' component={Terms} />
                     </Switch>
                 </div>
                 <Footer />
