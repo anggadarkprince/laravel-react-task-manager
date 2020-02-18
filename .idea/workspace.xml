@@ -2,11 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eff5e006-05dd-445b-a054-c2a316442e00" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/js/components/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/js/components/ProjectsList.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/ProjectsList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Header.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/Header.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/NewProject.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/projects/NewProject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/Projects.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/projects/Projects.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/ProjectsList.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/projects/ProjectsList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/js/components/SingleProject.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/components/projects/SingleProject.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -136,6 +140,9 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Angga\WORKSPACE\tasksman\resources\js\components\projects" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="E:\Angga\WORKSPACE\tasksman\resources\js\components\statics" />
       <recent name="E:\Angga\WORKSPACE\tasksman\resources\js\components" />
@@ -158,7 +165,9 @@
       <option name="presentableId" value="Default" />
       <updated>1581469432350</updated>
       <workItem from="1581469444912" duration="795000" />
-      <workItem from="1581642917557" duration="27470000" />
+      <workItem from="1581642917557" duration="28732000" />
+      <workItem from="1581902606311" duration="559000" />
+      <workItem from="1581994519405" duration="3530000" />
     </task>
     <servers />
   </component>
@@ -170,10 +179,10 @@
       <screen x="0" y="0" width="1366" height="728" />
     </state>
     <state x="428" y="168" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1366.728@0.0.1366.728" timestamp="1581643294262" />
-    <state x="413" y="120" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1581662271389">
+    <state x="413" y="120" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog" timestamp="1581995765416">
       <screen x="0" y="0" width="1366" height="728" />
     </state>
-    <state x="413" y="120" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.728@0.0.1366.728" timestamp="1581662271389" />
+    <state x="413" y="120" key="#com.jetbrains.php.actions.copyPaste.importReferences.PhpImportReferencesDialog/0.0.1366.728@0.0.1366.728" timestamp="1581995765416" />
     <state x="184" y="7" key="SettingsEditor" timestamp="1581650326573">
       <screen x="0" y="0" width="1366" height="728" />
     </state>

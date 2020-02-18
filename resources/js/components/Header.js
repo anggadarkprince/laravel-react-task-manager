@@ -1,7 +1,7 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link, withRouter} from 'react-router-dom'
 
-const Header = () => (
+const Header = ({location}) => (
     <nav className="navbar navbar-expand-md navbar-light bg-white shadow-sm">
         <div className='container'>
             <Link className='navbar-brand' to='/'>Tasks Manager</Link>
@@ -12,22 +12,22 @@ const Header = () => (
             </button>
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
-                    <li className="nav-item active">
+                    <li className={`nav-item${location.pathname === '/' ? ' active' : ''}`}>
                         <Link className='nav-link' to='/'>
                             <i className='mdi mdi-speedometer-slow mr-1'/>Home <span className="sr-only">(current)</span>
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li className={`nav-item${location.pathname.startsWith('/projects') ? ' active' : ''}`}>
                         <Link className='nav-link' to='/projects'>
                             <i className='mdi mdi-ballot-outline mr-1'/>Projects
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li className={`nav-item${location.pathname.startsWith('/archive') ? ' active' : ''}`}>
                         <Link className='nav-link' to='/archive'>
                             <i className='mdi mdi-archive-outline mr-1'/>Archive
                         </Link>
                     </li>
-                    <li className="nav-item">
+                    <li className={`nav-item${location.pathname.startsWith('/setting') ? ' active' : ''}`}>
                         <Link className='nav-link' to='/setting'>
                             <i className='mdi mdi-settings-outline mr-1'/>Setting
                         </Link>
@@ -52,7 +52,7 @@ const Header = () => (
                                 <i className='mdi mdi-account-outline mr-1'/>My Account
                             </a>
                             <a className="dropdown-item" href="#">
-                                <i className='mdi mdi-tune mr-1'/>Setting
+                                <i className='mdi mdi-settings-outline mr-1'/>Setting
                             </a>
                             <div className="dropdown-divider"/>
                             <a className="dropdown-item" href="#">
@@ -66,4 +66,4 @@ const Header = () => (
     </nav>
 );
 
-export default Header;
+export default withRouter(Header);

@@ -76,11 +76,11 @@ class NewProject extends Component {
         return (
             <div className='card shadow border-0'>
                 <div className='card-header border-bottom-0 font-weight-bold bg-primary text-white d-flex  align-items-center'>
-                    <Link to="/">
+                    <a href='#' onClick={e => {e.preventDefault(); this.props.history.goBack()}}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" style={{marginRight: '10px'}}>
                             <path style={{fill: 'white'}} transform="scale(-1, 1) translate(-24, 0)" d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"/>
                         </svg>
-                    </Link>
+                    </a>
                     <span>NEW PROJECT</span>
                 </div>
                 <div className='card-body'>

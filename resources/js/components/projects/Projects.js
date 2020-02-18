@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Link, Route, Switch} from 'react-router-dom'
+import {Route, Switch} from 'react-router-dom'
 import NewProject from "./NewProject";
 import SingleProject from "./SingleProject";
 import ProjectsList from "./ProjectsList";
@@ -7,6 +7,7 @@ import ProjectsList from "./ProjectsList";
 class Projects extends Component {
 
     render () {
+        console.log(this.props);
         return (
             <div className='row justify-content-center'>
                 <div className='col-md-8'>
