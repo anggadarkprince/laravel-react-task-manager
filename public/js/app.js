@@ -74638,7 +74638,7 @@ function (_Component) {
           style: {
             minWidth: 40
           }
-        }, project.tasks_count));
+        }, project.tasks_count, " / ", project.all_task_count));
       })));
     }
   }]);
@@ -74749,6 +74749,24 @@ function (_Component) {
       });
     }
   }, {
+    key: "handleEdit",
+    value: function handleEdit() {
+      this.props.history.push("/projects/".concat(this.state.project.id, "/edit"));
+    }
+  }, {
+    key: "handleDelete",
+    value: function handleDelete(modal) {
+      var _this3 = this;
+
+      var projectId = this.props.match.params.id;
+      modal.find('button').prop('disabled', true);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/api/projects/".concat(projectId)).then(function (response) {
+        modal.modal("hide");
+
+        _this3.props.history.push("/projects");
+      });
+    }
+  }, {
     key: "handleFieldChange",
     value: function handleFieldChange(event) {
       this.setState({
@@ -74758,7 +74776,7 @@ function (_Component) {
   }, {
     key: "handleAddNewTask",
     value: function handleAddNewTask(event) {
-      var _this3 = this;
+      var _this4 = this;
 
       event.preventDefault();
       this.setState({
@@ -74770,19 +74788,30 @@ function (_Component) {
       };
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/tasks', task).then(function (response) {
         // clear form input
-        _this3.setState({
+        _this4.setState({
           isLoading: false,
           title: ''
         }); // add new task to list of tasks
 
 
-        _this3.setState(function (prevState) {
+        _this4.setState(function (prevState) {
+          var indexBeforeCompleted = prevState.tasks.length;
+
+          for (var i = 0; i < prevState.tasks.length; i++) {
+            if (prevState.tasks[i].is_completed) {
+              indexBeforeCompleted = i;
+              break;
+            }
+          }
+
+          var newTasks = prevState.tasks;
+          newTasks.splice(indexBeforeCompleted, 0, response.data);
           return {
-            tasks: prevState.tasks.concat(response.data)
+            tasks: newTasks
           };
         });
       })["catch"](function (error) {
-        _this3.setState({
+        _this4.setState({
           isLoading: false,
           errors: error.response.data.errors
         });
@@ -74818,11 +74847,96 @@ function (_Component) {
         }, this.state.errors[field][0]);
       }
     }
+    /**
+     * Sorts an array of objects by column/property.
+     * @param {Array} array - The array of objects.
+     * @param {object} sortObject - The object that contains the sort order keys with directions (asc/desc). e.g. { age: 'desc', name: 'asc' }
+     * @returns {Array} The sorted array.
+     */
+
+  }, {
+    key: "multiSort",
+    value: function multiSort(array) {
+      var sortObject = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var sortKeys = Object.keys(sortObject); // Return array if no sort object is supplied.
+
+      if (!sortKeys.length) {
+        return array;
+      } // Change the values of the sortObject keys to -1, 0, or 1.
+
+
+      for (var key in sortObject) {
+        sortObject[key] = sortObject[key] === 'desc' || sortObject[key] === -1 ? -1 : sortObject[key] === 'skip' || sortObject[key] === 0 ? 0 : 1;
+      }
+
+      var keySort = function keySort(a, b, direction) {
+        direction = direction !== null ? direction : 1;
+
+        if (a === b) {
+          // If the values are the same, do not switch positions.
+          return 0;
+        } // If b > a, multiply by -1 to get the reverse direction.
+
+
+        return a > b ? direction : -1 * direction;
+      };
+
+      return array.sort(function (a, b) {
+        var sorted = 0;
+        var index = 0; // Loop until sorted (-1 or 1) or until the sort keys have been processed.
+
+        while (sorted === 0 && index < sortKeys.length) {
+          var _key = sortKeys[index];
+
+          if (_key) {
+            var direction = sortObject[_key];
+            sorted = keySort(a[_key], b[_key], direction);
+            index++;
+          }
+        }
+
+        return sorted;
+      });
+    }
   }, {
     key: "handleMarkTaskAsCompleted",
     value: function handleMarkTaskAsCompleted(taskId) {
-      var _this4 = this;
+      var _this5 = this;
 
+      this.setTaskLoading(taskId);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/tasks/".concat(taskId)).then(function (response) {
+        _this5.setState(function (prevState) {
+          var currentTasks = prevState.tasks.map(function (task) {
+            if (task.id === taskId) {
+              task['is_completed'] = 1;
+              task['isLoading'] = 0;
+            }
+
+            return task;
+          });
+          currentTasks = _this5.multiSort(currentTasks, {
+            is_completed: 'asc',
+            created_at: 'asc'
+          });
+          return {
+            tasks: currentTasks
+          };
+        });
+      });
+    }
+  }, {
+    key: "handlingTaskDelete",
+    value: function handlingTaskDelete(taskId) {
+      var _this6 = this;
+
+      this.setTaskLoading(taskId);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/api/tasks/".concat(taskId)).then(function (response) {
+        _this6.removeTaskFromList(taskId);
+      });
+    }
+  }, {
+    key: "setTaskLoading",
+    value: function setTaskLoading(taskId) {
       this.setState(function (prevState) {
         return {
           tasks: prevState.tasks.map(function (task) {
@@ -74834,38 +74948,22 @@ function (_Component) {
           })
         };
       });
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/tasks/".concat(taskId)).then(function (response) {
-        _this4.setState(function (prevState) {
-          return {
-            tasks: prevState.tasks.filter(function (task) {
-              return task.id !== taskId;
-            })
-          };
-        });
-      });
     }
   }, {
-    key: "handleEdit",
-    value: function handleEdit() {
-      this.props.history.push("/projects/".concat(this.state.project.id, "/edit"));
-    }
-  }, {
-    key: "handleDelete",
-    value: function handleDelete(modal) {
-      var _this5 = this;
-
-      var projectId = this.props.match.params.id;
-      modal.find('button').prop('disabled', true);
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/api/projects/".concat(projectId)).then(function (response) {
-        modal.modal("hide");
-
-        _this5.props.history.push("/projects");
+    key: "removeTaskFromList",
+    value: function removeTaskFromList(taskId) {
+      this.setState(function (prevState) {
+        return {
+          tasks: prevState.tasks.filter(function (task) {
+            return task.id !== taskId;
+          })
+        };
       });
     }
   }, {
     key: "render",
     value: function render() {
-      var _this6 = this;
+      var _this7 = this;
 
       var _this$state = this.state,
           project = _this$state.project,
@@ -74879,7 +74977,7 @@ function (_Component) {
         onClick: function onClick(e) {
           e.preventDefault();
 
-          _this6.props.history.goBack();
+          _this7.props.history.goBack();
         }
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("svg", {
         xmlns: "http://www.w3.org/2000/svg",
@@ -74952,13 +75050,21 @@ function (_Component) {
         return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", {
           className: "list-group-item d-flex justify-content-between align-items-center",
           key: task.id
-        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
+        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+          className: task.is_completed ? 'text-danger' : ''
+        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
           className: "mdi mdi-chevron-right mr-1"
-        }), " ", task.title), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+        }), task.is_completed ? react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("del", null, task.title) : task.title), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
           className: "btn btn-outline-success btn-sm",
+          disabled: task.isLoading || task.is_completed,
+          onClick: _this7.handleMarkTaskAsCompleted.bind(_this7, task.id)
+        }, "Complete"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+          className: "btn btn-outline-danger btn-sm ml-1",
           disabled: task.isLoading,
-          onClick: _this6.handleMarkTaskAsCompleted.bind(_this6, task.id)
-        }, "Complete"));
+          onClick: _this7.handlingTaskDelete.bind(_this7, task.id)
+        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
+          className: "mdi mdi-trash-can-outline"
+        }))));
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_modals_Delete__WEBPACK_IMPORTED_MODULE_3__["default"], {
         title: "Project",
         label: project.name,
@@ -74987,7 +75093,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = (function (Help) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Help Page"));
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Help Page"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+    className: "text-muted"
+  }, "Last updated: October 20, 2018"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "For more information please contact our support at", ' ', react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    href: "mailto:support@task-manager.app"
+  }, "support@task-manager.app"), ' ', "and if you found any bugs, please sent them to ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    href: "mailto:bug@task-manager.app"
+  }, "bug@task-manager.app")));
 });
 
 /***/ }),
@@ -75027,7 +75139,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = (function (Terms) {
-  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Terms and Agreement"));
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "Terms and Agreement"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+    className: "text-muted"
+  }, "Last updated: October 20, 2018"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Please read these Terms and Conditions (\"Terms\", \"Terms and Conditions\") carefully before using the Task Manager website (the \"Service\") operated by Task Manager (\"us\", \"we\", or \"our\")."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. These Terms apply to all visitors, users and others who access or use the Service."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "By accessing or using the Service you agree to be bound by these Terms. If you disagree with any part of the terms then you may not access the Service. Terms & Conditions created by", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    href: "https://termsfeed.com",
+    rel: "nofollow"
+  }, "TermsFeed"), " for Task Manager."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Accounts"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "When you create an account with us, you must provide us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of your account on our Service."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "You are responsible for safeguarding the password that you use to access the Service and for any activities or actions under your password, whether your password is with our Service or a third-party service."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "You agree not to disclose your password to any third party. You must notify us immediately upon becoming aware of any breach of security or unauthorized use of your account."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Links To Other Web Sites"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Our Service may contain links to third-party web sites or services that are not owned or controlled by Task Manager."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Task Manager has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that Task Manager shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with use of or reliance on any such content, goods or services available on or through any such web sites or services."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "We strongly advise you to read the terms and conditions and privacy policies of any third-party web sites or services that you visit."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Termination"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "We may terminate or suspend access to our Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "We may terminate or suspend your account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Upon termination, your right to use the Service will immediately cease. If you wish to terminate your account, you may simply discontinue using the Service."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Governing Law"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "These Terms shall be governed and construed in accordance with the laws of Indonesia, without regard to its conflict of law provisions."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Our failure to enforce any right or provision of these Terms will not be considered a waiver of those rights. If any provision of these Terms is held to be invalid or unenforceable by a court, the remaining provisions of these Terms will remain in effect. These Terms constitute the entire agreement between us regarding our Service, and supersede and replace any prior agreements we might have between us regarding the Service."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Changes"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material we will try to provide at least 30 days notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "By continuing to access or use our Service after those revisions become effective, you agree to be bound by the revised terms. If you do not agree to the new terms, please stop using the Service."), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", null, "Contact Us"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "If you have any questions about these Terms, please contact us."));
 });
 
 /***/ }),

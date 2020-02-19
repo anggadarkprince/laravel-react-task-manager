@@ -45,7 +45,7 @@ class ProjectsList extends Component {
                                 <small className='mb-0 text-muted'>{project.description}</small>
                             </div>
                             <span className='badge badge-primary badge-pill' style={{minWidth: 40}}>
-                                {project.tasks_count}
+                                {project.tasks_count} / {project.all_task_count}
                             </span>
                         </Link>
                     ))}

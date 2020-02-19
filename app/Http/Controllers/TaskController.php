@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Task;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ class TaskController extends Controller
             $task = Task::create([
                 'title' => $validatedData['title'],
                 'project_id' => $request->project_id,
+                'is_completed' => 0
             ]);
 
             return $task->toJson();
@@ -49,5 +51,18 @@ class TaskController extends Controller
                 ]
             ], 500);
         }
+    }
+
+
+    /**
+     * Delete task.
+     *
+     * @param Task $task
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(Task $task)
+    {
+        return response()->json(['status' => $task->delete() ? 'success' : 'error']);
     }
 }

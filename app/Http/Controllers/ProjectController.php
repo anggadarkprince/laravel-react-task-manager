@@ -18,9 +18,12 @@ class ProjectController extends Controller
     {
         $projects = Project::where('is_completed', false)
             ->orderBy('created_at', 'desc')
-            ->withCount(['tasks' => function ($query) {
-                $query->where('is_completed', false);
-            }])
+            ->withCount([
+                'tasks AS all_task_count',
+                'tasks' => function ($query) {
+                    $query->where('is_completed', false);
+                }
+            ])
             ->get();
 
         return $projects->toJson();
@@ -77,7 +80,8 @@ class ProjectController extends Controller
     public function show($id)
     {
         $project = Project::with(['tasks' => function ($query) {
-            $query->where('is_completed', false);
+            //$query->where('is_completed', false);
+            $query->orderBy('is_completed', 'asc');
         }])->find($id);
 
         return $project->toJson();

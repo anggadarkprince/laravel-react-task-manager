@@ -49,6 +49,19 @@ class SingleProject extends Component {
             .then(response => history.push('/projects'))
     }
 
+    handleEdit() {
+        this.props.history.push(`/projects/${this.state.project.id}/edit`);
+    }
+
+    handleDelete(modal) {
+        const projectId = this.props.match.params.id;
+        modal.find('button').prop('disabled', true);
+        axios.delete(`/api/projects/${projectId}`).then(response => {
+            modal.modal("hide");
+            this.props.history.push(`/projects`)
+        })
+    }
+
     handleFieldChange (event) {
         this.setState({
             title: event.target.value
@@ -73,9 +86,22 @@ class SingleProject extends Component {
                     title: ''
                 });
                 // add new task to list of tasks
-                this.setState(prevState => ({
-                    tasks: prevState.tasks.concat(response.data)
-                }))
+                this.setState(prevState => {
+                    let indexBeforeCompleted = prevState.tasks.length;
+                    for (let i = 0; i < prevState.tasks.length; i++) {
+                        if(prevState.tasks[i].is_completed) {
+                            indexBeforeCompleted = i;
+                            break;
+                        }
+                    }
+
+                    const newTasks = prevState.tasks;
+                    newTasks.splice(indexBeforeCompleted, 0, response.data);
+
+                    return {
+                        tasks: newTasks
+                    }
+                })
             })
             .catch(error => {
                 this.setState({
@@ -109,7 +135,85 @@ class SingleProject extends Component {
         }
     }
 
+    /**
+     * Sorts an array of objects by column/property.
+     * @param {Array} array - The array of objects.
+     * @param {object} sortObject - The object that contains the sort order keys with directions (asc/desc). e.g. { age: 'desc', name: 'asc' }
+     * @returns {Array} The sorted array.
+     */
+    multiSort(array, sortObject = {}) {
+        const sortKeys = Object.keys(sortObject);
+
+        // Return array if no sort object is supplied.
+        if (!sortKeys.length) {
+            return array;
+        }
+
+        // Change the values of the sortObject keys to -1, 0, or 1.
+        for (let key in sortObject) {
+            sortObject[key] = sortObject[key] === 'desc' || sortObject[key] === -1 ? -1 : (sortObject[key] === 'skip' || sortObject[key] === 0 ? 0 : 1);
+        }
+
+        const keySort = (a, b, direction) => {
+            direction = direction !== null ? direction : 1;
+
+            if (a === b) { // If the values are the same, do not switch positions.
+                return 0;
+            }
+
+            // If b > a, multiply by -1 to get the reverse direction.
+            return a > b ? direction : -1 * direction;
+        };
+
+        return array.sort((a, b) => {
+            let sorted = 0;
+            let index = 0;
+
+            // Loop until sorted (-1 or 1) or until the sort keys have been processed.
+            while (sorted === 0 && index < sortKeys.length) {
+                const key = sortKeys[index];
+
+                if (key) {
+                    const direction = sortObject[key];
+
+                    sorted = keySort(a[key], b[key], direction);
+                    index++;
+                }
+            }
+
+            return sorted;
+        });
+    }
+
     handleMarkTaskAsCompleted (taskId) {
+        this.setTaskLoading(taskId);
+
+        axios.put(`/api/tasks/${taskId}`).then(response => {
+            this.setState(prevState => {
+                let currentTasks = prevState.tasks.map(task => {
+                    if(task.id === taskId) {
+                        task['is_completed'] = 1;
+                        task['isLoading'] = 0;
+                    }
+                    return task;
+                });
+
+                currentTasks = this.multiSort(currentTasks, {is_completed: 'asc', created_at: 'asc'});
+
+                return {tasks: currentTasks};
+            })
+        })
+    }
+
+    handlingTaskDelete(taskId) {
+        this.setTaskLoading(taskId);
+
+        axios.delete(`/api/tasks/${taskId}`).then(response => {
+            this.removeTaskFromList(taskId);
+        })
+    }
+
+    setTaskLoading(taskId) {
         this.setState(prevState => ({
             tasks: prevState.tasks.map(task => {
                 if(task.id === taskId) {
@@ -118,27 +222,14 @@ class SingleProject extends Component {
                 return task;
             })
         }));
-
-        axios.put(`/api/tasks/${taskId}`).then(response => {
-            this.setState(prevState => ({
-                tasks: prevState.tasks.filter(task => {
-                    return task.id !== taskId
-                })
-            }))
-        })
     }
 
-    handleEdit() {
-        this.props.history.push(`/projects/${this.state.project.id}/edit`);
-    }
-
-    handleDelete(modal) {
-        const projectId = this.props.match.params.id;
-        modal.find('button').prop('disabled', true);
-        axios.delete(`/api/projects/${projectId}`).then(response => {
-            modal.modal("hide");
-            this.props.history.push(`/projects`)
-        })
+    removeTaskFromList(taskId) {
+        this.setState(prevState => ({
+            tasks: prevState.tasks.filter(task => {
+                return task.id !== taskId
+            })
+        }))
     }
 
     render () {
@@ -184,7 +275,6 @@ class SingleProject extends Component {
                 </div>
 
                 <div className='card-body border-top'>
-
                     <form onSubmit={this.handleAddNewTask}>
                         {this.renderErrorFor('general')}
                         <div className='input-group'>
@@ -201,12 +291,18 @@ class SingleProject extends Component {
                 <ul className='list-group list-group-flush border-top'>
                     {tasks.map(task => (
                         <li className='list-group-item d-flex justify-content-between align-items-center' key={task.id}>
-                            <div>
-                                <i className='mdi mdi-chevron-right mr-1'/> {task.title}
+                            <div className={task.is_completed ? 'text-danger' : ''}>
+                                <i className='mdi mdi-chevron-right mr-1'/>
+                                {task.is_completed ? <del>{task.title}</del> : task.title}
                             </div>
-                            <button className='btn btn-outline-success btn-sm' disabled={task.isLoading} onClick={this.handleMarkTaskAsCompleted.bind(this, task.id)}>
-                                Complete
-                            </button>
+                            <div>
+                                <button className='btn btn-outline-success btn-sm' disabled={task.isLoading || task.is_completed} onClick={this.handleMarkTaskAsCompleted.bind(this, task.id)}>
+                                    Complete
+                                </button>
+                                <button className='btn btn-outline-danger btn-sm ml-1' disabled={task.isLoading} onClick={this.handlingTaskDelete.bind(this, task.id)}>
+                                    <i className='mdi mdi-trash-can-outline'/>
+                                </button>
+                            </div>
                         </li>
                     ))}
                 </ul>
