@@ -25,5 +25,6 @@ Route::post('projects', 'ProjectController@store');
 Route::get('projects/{id}', 'ProjectController@show');
 Route::put('projects/{project}/complete', 'ProjectController@markAsCompleted');
 Route::put('projects/{project}', 'ProjectController@update');
+Route::delete('projects/{project}', 'ProjectController@destroy');
 Route::post('tasks', 'TaskController@store');
 Route::put('tasks/{task}', 'TaskController@markAsCompleted');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Project;
+use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -133,5 +134,17 @@ class ProjectController extends Controller
         $project->update();
 
         return response()->json($project);
+    }
+
+    /**
+     * Delete project.
+     *
+     * @param Project $project
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function destroy(Project $project)
+    {
+        return response()->json(['status' => $project->delete() ? 'success' : 'error']);
     }
 }

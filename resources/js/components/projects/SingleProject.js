@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { Component } from 'react'
 import {Link} from "react-router-dom";
+import Delete from "../modals/Delete";
 
 class SingleProject extends Component {
     constructor (props) {
@@ -18,6 +19,7 @@ class SingleProject extends Component {
         this.hasErrorFor = this.hasErrorFor.bind(this);
         this.renderErrorFor = this.renderErrorFor.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     componentDidMount () {
@@ -130,8 +132,13 @@ class SingleProject extends Component {
         this.props.history.push(`/projects/${this.state.project.id}/edit`);
     }
 
-    handleDelete(taskId) {
-
+    handleDelete(modal) {
+        const projectId = this.props.match.params.id;
+        modal.find('button').prop('disabled', true);
+        axios.delete(`/api/projects/${projectId}`).then(response => {
+            modal.modal("hide");
+            this.props.history.push(`/projects`)
+        })
     }
 
     render () {
@@ -155,7 +162,7 @@ class SingleProject extends Component {
                         <button className='btn btn-success btn-sm ml-1' disabled={this.state.isLoading} onClick={this.handleEdit}>
                             <i className='mdi mdi-square-edit-outline'/>
                         </button>
-                        <button className='btn btn-danger btn-sm ml-1' disabled={this.state.isLoading} onClick={this.handleDelete}>
+                        <button data-target="#modal-delete" data-toggle="modal" className='btn btn-danger btn-sm ml-1' disabled={this.state.isLoading}>
                             <i className='mdi mdi-trash-can-outline'/>
                         </button>
                     </div>
@@ -203,6 +210,8 @@ class SingleProject extends Component {
                         </li>
                     ))}
                 </ul>
+
+                <Delete title='Project' label={project.name} onDelete={this.handleDelete}/>
             </div>
         )
     }

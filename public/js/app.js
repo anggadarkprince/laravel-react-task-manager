@@ -73978,6 +73978,80 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./resources/js/components/modals/Delete.js":
+/*!**************************************************!*\
+  !*** ./resources/js/components/modals/Delete.js ***!
+  \**************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_1__);
+
+
+/* harmony default export */ __webpack_exports__["default"] = (function (_ref) {
+  var _ref$title = _ref.title,
+      title = _ref$title === void 0 ? 'Data' : _ref$title,
+      _ref$label = _ref.label,
+      label = _ref$label === void 0 ? '' : _ref$label,
+      _ref$onDelete = _ref.onDelete,
+      onDelete = _ref$onDelete === void 0 ? function () {} : _ref$onDelete;
+  var modal = jquery__WEBPACK_IMPORTED_MODULE_1___default()("#modal-delete");
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal fade",
+    id: "modal-delete",
+    tabIndex: "-1",
+    role: "dialog",
+    "aria-labelledby": "modalDelete",
+    "aria-hidden": "true"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal-dialog",
+    role: "document"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal-content"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal-header"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h5", {
+    className: "modal-title",
+    id: "modalDelete"
+  }, "Delete ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: "delete-title"
+  }, title)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "close",
+    "data-dismiss": "modal",
+    "aria-label": "Close"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    "aria-hidden": "true"
+  }, "\xD7"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal-body"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+    className: "lead mb-0"
+  }, "Are you sure want to delete ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: "font-weight-bold delete-label"
+  }, label), "?"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("small", {
+    className: "text-muted"
+  }, "All related data will be deleted and this action might be irreversible.")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "modal-footer"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "button",
+    className: "btn btn-outline-danger btn-sm",
+    "data-dismiss": "modal"
+  }, "CLOSE"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    type: "submit",
+    className: "btn btn-danger btn-sm",
+    onClick: function onClick() {
+      return onDelete(modal);
+    }
+  }, "DELETE")))));
+});
+
+/***/ }),
+
 /***/ "./resources/js/components/projects/EditProject.js":
 /*!*********************************************************!*\
   !*** ./resources/js/components/projects/EditProject.js ***!
@@ -74590,6 +74664,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _modals_Delete__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../modals/Delete */ "./resources/js/components/modals/Delete.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -74607,6 +74682,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -74639,6 +74715,7 @@ function (_Component) {
     _this.hasErrorFor = _this.hasErrorFor.bind(_assertThisInitialized(_this));
     _this.renderErrorFor = _this.renderErrorFor.bind(_assertThisInitialized(_this));
     _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
+    _this.handleDelete = _this.handleDelete.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -74774,11 +74851,21 @@ function (_Component) {
     }
   }, {
     key: "handleDelete",
-    value: function handleDelete(taskId) {}
+    value: function handleDelete(modal) {
+      var _this5 = this;
+
+      var projectId = this.props.match.params.id;
+      modal.find('button').prop('disabled', true);
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("/api/projects/".concat(projectId)).then(function (response) {
+        modal.modal("hide");
+
+        _this5.props.history.push("/projects");
+      });
+    }
   }, {
     key: "render",
     value: function render() {
-      var _this5 = this;
+      var _this6 = this;
 
       var _this$state = this.state,
           project = _this$state.project,
@@ -74792,7 +74879,7 @@ function (_Component) {
         onClick: function onClick(e) {
           e.preventDefault();
 
-          _this5.props.history.goBack();
+          _this6.props.history.goBack();
         }
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("svg", {
         xmlns: "http://www.w3.org/2000/svg",
@@ -74821,9 +74908,10 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
         className: "mdi mdi-square-edit-outline"
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+        "data-target": "#modal-delete",
+        "data-toggle": "modal",
         className: "btn btn-danger btn-sm ml-1",
-        disabled: this.state.isLoading,
-        onClick: this.handleDelete
+        disabled: this.state.isLoading
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
         className: "mdi mdi-trash-can-outline"
       })))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -74869,9 +74957,13 @@ function (_Component) {
         }), " ", task.title), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
           className: "btn btn-outline-success btn-sm",
           disabled: task.isLoading,
-          onClick: _this5.handleMarkTaskAsCompleted.bind(_this5, task.id)
+          onClick: _this6.handleMarkTaskAsCompleted.bind(_this6, task.id)
         }, "Complete"));
-      })));
+      })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(_modals_Delete__WEBPACK_IMPORTED_MODULE_3__["default"], {
+        title: "Project",
+        label: project.name,
+        onDelete: this.handleDelete
+      }));
     }
   }]);
 
