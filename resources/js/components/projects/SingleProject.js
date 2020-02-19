@@ -17,6 +17,7 @@ class SingleProject extends Component {
         this.handleAddNewTask = this.handleAddNewTask.bind(this);
         this.hasErrorFor = this.hasErrorFor.bind(this);
         this.renderErrorFor = this.renderErrorFor.bind(this);
+        this.handleEdit = this.handleEdit.bind(this);
     }
 
     componentDidMount () {
@@ -42,8 +43,8 @@ class SingleProject extends Component {
             })
         });
 
-        axios.put(`/api/projects/${this.state.project.id}`)
-            .then(response => history.push('/'))
+        axios.put(`/api/projects/${this.state.project.id}/complete`)
+            .then(response => history.push('/projects'))
     }
 
     handleFieldChange (event) {
@@ -125,6 +126,14 @@ class SingleProject extends Component {
         })
     }
 
+    handleEdit() {
+        this.props.history.push(`/projects/${this.state.project.id}/edit`);
+    }
+
+    handleDelete(taskId) {
+
+    }
+
     render () {
         const { project, tasks } = this.state;
 
@@ -139,9 +148,17 @@ class SingleProject extends Component {
                         </a>
                         <span>{project.name}</span>
                     </div>
-                    <button className='btn btn-danger btn-sm' disabled={this.state.isLoading} onClick={this.handleMarkProjectAsCompleted}>
-                        Mark as completed
-                    </button>
+                    <div>
+                        <button className='btn btn-warning btn-sm' disabled={this.state.isLoading} onClick={this.handleMarkProjectAsCompleted}>
+                            <i className='mdi mdi-check-all'/> Mark as completed
+                        </button>
+                        <button className='btn btn-success btn-sm ml-1' disabled={this.state.isLoading} onClick={this.handleEdit}>
+                            <i className='mdi mdi-square-edit-outline'/>
+                        </button>
+                        <button className='btn btn-danger btn-sm ml-1' disabled={this.state.isLoading} onClick={this.handleDelete}>
+                            <i className='mdi mdi-trash-can-outline'/>
+                        </button>
+                    </div>
                 </div>
                 <div className='card-body'>
                     <div className='d-flex justify-content-between align-items-center'>

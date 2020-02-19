@@ -23,6 +23,6 @@ class DashboardController extends Controller
             'tasks' => $tasks,
             'archived' => $archived,
         ]);
-        return $data->toJson();
+        return response()->json($data);
     }
 }

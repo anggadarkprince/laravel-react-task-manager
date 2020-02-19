@@ -73978,6 +73978,214 @@ function (_Component) {
 
 /***/ }),
 
+/***/ "./resources/js/components/projects/EditProject.js":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/projects/EditProject.js ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+
+
+
+
+var EditProject =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(EditProject, _Component);
+
+  function EditProject(props) {
+    var _this;
+
+    _classCallCheck(this, EditProject);
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(EditProject).call(this, props));
+    _this.state = {
+      isLoading: true,
+      name: '',
+      description: '',
+      errors: []
+    };
+    _this.handleFieldChange = _this.handleFieldChange.bind(_assertThisInitialized(_this));
+    _this.handleUpdateProject = _this.handleUpdateProject.bind(_assertThisInitialized(_this));
+    _this.hasErrorFor = _this.hasErrorFor.bind(_assertThisInitialized(_this));
+    _this.renderErrorFor = _this.renderErrorFor.bind(_assertThisInitialized(_this));
+    return _this;
+  }
+
+  _createClass(EditProject, [{
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      var _this2 = this;
+
+      var projectId = this.props.match.params.id;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/projects/".concat(projectId)).then(function (response) {
+        _this2.setState({
+          isLoading: false,
+          name: response.data.name,
+          description: response.data.description
+        });
+      });
+    }
+  }, {
+    key: "handleFieldChange",
+    value: function handleFieldChange(event) {
+      this.setState(_defineProperty({}, event.target.name, event.target.value));
+    }
+  }, {
+    key: "handleUpdateProject",
+    value: function handleUpdateProject(event) {
+      var _this3 = this;
+
+      event.preventDefault();
+      this.setState({
+        isLoading: true
+      });
+      var project = {
+        name: this.state.name,
+        description: this.state.description
+      };
+      var projectId = this.props.match.params.id;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/projects/".concat(projectId), project).then(function (response) {
+        _this3.props.history.push("/projects/".concat(projectId));
+      })["catch"](function (error) {
+        _this3.setState({
+          isLoading: false,
+          errors: error.response.data.errors
+        });
+      });
+    }
+  }, {
+    key: "hasErrorFor",
+    value: function hasErrorFor(field) {
+      return !!this.state.errors[field];
+    }
+  }, {
+    key: "renderErrorFor",
+    value: function renderErrorFor(field) {
+      var className = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'invalid-feedback';
+
+      if (this.hasErrorFor(field)) {
+        if (field === 'general') {
+          return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+            className: "alert alert-warning alert-dismissible",
+            role: "alert"
+          }, this.state.errors[field], react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+            type: "button",
+            className: "close",
+            "data-dismiss": "alert",
+            "aria-label": "Close"
+          }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
+            "aria-hidden": "true"
+          }, "\xD7")));
+        }
+
+        return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
+          className: className
+        }, this.state.errors[field][0]);
+      }
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      var _this4 = this;
+
+      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "card shadow border-0"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "card-header border-bottom-0 font-weight-bold bg-warning text-white d-flex align-items-center"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
+        href: "#",
+        onClick: function onClick(e) {
+          e.preventDefault();
+
+          _this4.props.history.goBack();
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("svg", {
+        xmlns: "http://www.w3.org/2000/svg",
+        width: "15",
+        height: "15",
+        viewBox: "0 0 24 24",
+        style: {
+          marginRight: '10px'
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("path", {
+        style: {
+          fill: 'white'
+        },
+        transform: "scale(-1, 1) translate(-24, 0)",
+        d: "M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"
+      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "EDIT PROJECT")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "card-body"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
+        onSubmit: this.handleUpdateProject
+      }, this.renderErrorFor('general'), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
+        htmlFor: "name"
+      }, "Project name"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+        disabled: this.state.isLoading,
+        id: "name",
+        type: "text",
+        className: "form-control ".concat(this.hasErrorFor('name') ? 'is-invalid' : ''),
+        name: "name",
+        placeholder: 'Input project title',
+        value: this.state.name,
+        onChange: this.handleFieldChange
+      }), this.renderErrorFor('name')), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "form-group"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
+        htmlFor: "description"
+      }, "Project description"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("textarea", {
+        disabled: this.state.isLoading,
+        id: "description",
+        className: "form-control ".concat(this.hasErrorFor('description') ? 'is-invalid' : ''),
+        name: "description",
+        rows: "5",
+        placeholder: 'Detail about project',
+        value: this.state.description,
+        onChange: this.handleFieldChange
+      }), this.renderErrorFor('description')), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+        className: "btn btn-block btn-outline-primary",
+        disabled: this.state.isLoading
+      }, "Update Project"))));
+    }
+  }]);
+
+  return EditProject;
+}(react__WEBPACK_IMPORTED_MODULE_1__["Component"]);
+
+/* harmony default export */ __webpack_exports__["default"] = (EditProject);
+
+/***/ }),
+
 /***/ "./resources/js/components/projects/NewProject.js":
 /*!********************************************************!*\
   !*** ./resources/js/components/projects/NewProject.js ***!
@@ -74186,6 +74394,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _NewProject__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./NewProject */ "./resources/js/components/projects/NewProject.js");
 /* harmony import */ var _SingleProject__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./SingleProject */ "./resources/js/components/projects/SingleProject.js");
 /* harmony import */ var _ProjectsList__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./ProjectsList */ "./resources/js/components/projects/ProjectsList.js");
+/* harmony import */ var _EditProject__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./EditProject */ "./resources/js/components/projects/EditProject.js");
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -74203,6 +74412,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
 
 
 
@@ -74232,8 +74442,13 @@ function (_Component) {
         path: "".concat(this.props.match.path, "/create"),
         component: _NewProject__WEBPACK_IMPORTED_MODULE_2__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
+        exact: true,
         path: "".concat(this.props.match.path, "/:id"),
         component: _SingleProject__WEBPACK_IMPORTED_MODULE_3__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
+        exact: true,
+        path: "".concat(this.props.match.path, "/:id/edit"),
+        component: _EditProject__WEBPACK_IMPORTED_MODULE_5__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Route"], {
         path: this.props.match.path,
         component: _ProjectsList__WEBPACK_IMPORTED_MODULE_4__["default"]
@@ -74423,6 +74638,7 @@ function (_Component) {
     _this.handleAddNewTask = _this.handleAddNewTask.bind(_assertThisInitialized(_this));
     _this.hasErrorFor = _this.hasErrorFor.bind(_assertThisInitialized(_this));
     _this.renderErrorFor = _this.renderErrorFor.bind(_assertThisInitialized(_this));
+    _this.handleEdit = _this.handleEdit.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -74451,8 +74667,8 @@ function (_Component) {
           return task;
         })
       });
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/projects/".concat(this.state.project.id)).then(function (response) {
-        return history.push('/');
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("/api/projects/".concat(this.state.project.id, "/complete")).then(function (response) {
+        return history.push('/projects');
       });
     }
   }, {
@@ -74552,6 +74768,14 @@ function (_Component) {
       });
     }
   }, {
+    key: "handleEdit",
+    value: function handleEdit() {
+      this.props.history.push("/projects/".concat(this.state.project.id, "/edit"));
+    }
+  }, {
+    key: "handleDelete",
+    value: function handleDelete(taskId) {}
+  }, {
     key: "render",
     value: function render() {
       var _this5 = this;
@@ -74584,11 +74808,25 @@ function (_Component) {
         },
         transform: "scale(-1, 1) translate(-24, 0)",
         d: "M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"
-      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, project.name)), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
-        className: "btn btn-danger btn-sm",
+      }))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, project.name)), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+        className: "btn btn-warning btn-sm",
         disabled: this.state.isLoading,
         onClick: this.handleMarkProjectAsCompleted
-      }, "Mark as completed")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
+        className: "mdi mdi-check-all"
+      }), " Mark as completed"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+        className: "btn btn-success btn-sm ml-1",
+        disabled: this.state.isLoading,
+        onClick: this.handleEdit
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
+        className: "mdi mdi-square-edit-outline"
+      })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+        className: "btn btn-danger btn-sm ml-1",
+        disabled: this.state.isLoading,
+        onClick: this.handleDelete
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("i", {
+        className: "mdi mdi-trash-can-outline"
+      })))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "card-body"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "d-flex justify-content-between align-items-center"

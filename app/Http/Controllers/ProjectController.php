@@ -96,6 +96,32 @@ class ProjectController extends Controller
     }
 
     /**
+     * Update project data.
+     *
+     * @param Request $request
+     * @param Project $project
+     * @return JsonResponse
+     */
+    public function update(Project $project, Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'description' => 'required',
+        ]);
+
+        try {
+            $project->update($request->all());
+            return response()->json($project);
+        } catch (QueryException $e) {
+            return response()->json([
+                'errors' => [
+                    'general' => 'Something went wrong, try again or contact administrator'
+                ]
+            ], 500);
+        }
+    }
+
+    /**
      * Mark project as completed.
      *
      * @param Project $project
@@ -106,6 +132,6 @@ class ProjectController extends Controller
         $project->is_completed = true;
         $project->update();
 
-        return response()->json('Project updated!');
+        return response()->json($project);
     }
 }

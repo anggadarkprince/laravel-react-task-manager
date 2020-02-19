@@ -23,6 +23,7 @@ Route::get('archive', 'ProjectController@archive');
 Route::get('archive/{id}', 'ProjectController@archiveTask');
 Route::post('projects', 'ProjectController@store');
 Route::get('projects/{id}', 'ProjectController@show');
-Route::put('projects/{project}', 'ProjectController@markAsCompleted');
+Route::put('projects/{project}/complete', 'ProjectController@markAsCompleted');
+Route::put('projects/{project}', 'ProjectController@update');
 Route::post('tasks', 'TaskController@store');
 Route::put('tasks/{task}', 'TaskController@markAsCompleted');
