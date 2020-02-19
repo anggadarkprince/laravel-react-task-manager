@@ -7,6 +7,7 @@ import Projects from './projects/Projects';
 import Dashboard from "./home/Dashboard";
 import Help from './statics/Help';
 import Terms from './statics/Terms';
+import Archive from "./archive/Archive";
 
 class App extends Component {
     render () {
@@ -17,6 +18,7 @@ class App extends Component {
                     <Switch>
                         <Route exact path='/' component={Dashboard} />
                         <Route path='/projects' component={Projects} />
+                        <Route path='/archive' component={Archive} />
                         <Route path='/help' component={Help} />
                         <Route path='/terms' component={Terms} />
                     </Switch>

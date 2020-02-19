@@ -26,6 +26,19 @@ class ProjectController extends Controller
     }
 
     /**
+     * Show completed project
+     * @return mixed
+     */
+    public function archive()
+    {
+        $projects = Project::where('is_completed', true)
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return $projects->toJson();
+    }
+
+    /**
      * Save new project.
      *
      * @param Request $request
@@ -65,6 +78,19 @@ class ProjectController extends Controller
         $project = Project::with(['tasks' => function ($query) {
             $query->where('is_completed', false);
         }])->find($id);
+
+        return $project->toJson();
+    }
+
+    /**
+     * Show single project with task within.
+     *
+     * @param $id
+     * @return string
+     */
+    public function archiveTask($id)
+    {
+        $project = Project::with(['tasks'])->find($id);
 
         return $project->toJson();
     }

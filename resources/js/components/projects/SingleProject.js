@@ -165,7 +165,7 @@ class SingleProject extends Component {
                         {this.renderErrorFor('general')}
                         <div className='input-group'>
                             <input type='text' name='title' className={`form-control ${this.hasErrorFor('title') ? 'is-invalid' : ''}`}
-                                   placeholder='Task title' readOnly={this.state.isLoading} value={this.state.title} onChange={this.handleFieldChange}/>
+                                   placeholder='Task title' maxLength='100' readOnly={this.state.isLoading} value={this.state.title} onChange={this.handleFieldChange}/>
                             <div className='input-group-append'>
                                 <button className='btn btn-primary' disabled={this.state.isLoading}>Add Task</button>
                             </div>
@@ -177,7 +177,9 @@ class SingleProject extends Component {
                 <ul className='list-group list-group-flush border-top'>
                     {tasks.map(task => (
                         <li className='list-group-item d-flex justify-content-between align-items-center' key={task.id}>
-                            {task.title}
+                            <div>
+                                <i className='mdi mdi-chevron-right mr-1'/> {task.title}
+                            </div>
                             <button className='btn btn-outline-success btn-sm' disabled={task.isLoading} onClick={this.handleMarkTaskAsCompleted.bind(this, task.id)}>
                                 Complete
                             </button>

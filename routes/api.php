@@ -19,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('dashboard', 'DashboardController@index');
 Route::get('projects', 'ProjectController@index');
+Route::get('archive', 'ProjectController@archive');
+Route::get('archive/{id}', 'ProjectController@archiveTask');
 Route::post('projects', 'ProjectController@store');
 Route::get('projects/{id}', 'ProjectController@show');
 Route::put('projects/{project}', 'ProjectController@markAsCompleted');

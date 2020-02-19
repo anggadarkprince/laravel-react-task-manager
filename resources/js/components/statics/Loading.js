@@ -1,7 +1,9 @@
 import React from "react";
 
-export default () => (
-    <div className="spinner-border spinner-border-sm text-primary">
-        <span className="sr-only">Loading...</span>
+export default (props) => (
+    <div {...props}>
+        <div className="spinner-border text-primary">
+            <span className="sr-only">Loading...</span>
+        </div>
     </div>
 )

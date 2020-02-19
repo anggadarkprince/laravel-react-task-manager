@@ -7,7 +7,6 @@ import ProjectsList from "./ProjectsList";
 class Projects extends Component {
 
     render () {
-        console.log(this.props);
         return (
             <div className='row justify-content-center'>
                 <div className='col-md-8'>

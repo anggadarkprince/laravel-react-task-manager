@@ -1,6 +1,7 @@
 import axios from 'axios'
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom'
+import Loading from "../statics/Loading";
 
 class ProjectsList extends Component {
     constructor () {
@@ -31,11 +32,7 @@ class ProjectsList extends Component {
                             Create new project
                         </Link>
                         {
-                            isLoading ? (
-                                <div className="spinner-border spinner-border-sm text-primary">
-                                    <span className="sr-only">Loading...</span>
-                                </div>
-                            ) : null
+                            isLoading ? <Loading/> : null
                         }
                     </div>
                 </div>
