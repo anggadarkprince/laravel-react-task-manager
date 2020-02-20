@@ -18,6 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('dashboard', 'DashboardController@index');
+Route::get('search', 'SearchController@index');
 Route::get('projects', 'ProjectController@index');
 Route::get('archive', 'ProjectController@archive');
 Route::get('archive/{id}', 'ProjectController@archiveTask');
