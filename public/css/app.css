@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap);/* MaterialDesignIcons.com */
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap);/* MaterialDesignIcons.com */
 @font-face {
   font-family: "Material Design Icons";
   src: url(/fonts/vendor/@mdi/materialdesignicons-webfont.eot?2d0a0d8f5f173be15a67aa084db94fe6);
@@ -31144,5 +31144,13 @@ body {
   left: 0;
   top: 0;
   background: rgba(255, 255, 255, 0.5);
+}
+
+label {
+  font-weight: 500;
+}
+
+.auth-control {
+  font-size: 0.9rem;
 }
 

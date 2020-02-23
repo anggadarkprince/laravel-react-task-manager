@@ -23,6 +23,13 @@ class Header extends Component {
             this.setState({keyword: this.props.q});
         }
     }
+    
+    onLogout(e) {
+        e.preventDefault();
+
+        this.props.setAuthState(false);
+        this.props.history.push('/login');
+    }
 
     render() {
         const {location} = this.props;
@@ -87,7 +94,7 @@ class Header extends Component {
                                         <i className='mdi mdi-settings-outline mr-1'/>Setting
                                     </a>
                                     <div className="dropdown-divider"/>
-                                    <a className="dropdown-item" href="#">
+                                    <a className="dropdown-item" href="/logout" onClick={this.onLogout.bind(this)}>
                                         <i className='mdi mdi-logout mr-1'/>Logout
                                     </a>
                                 </div>

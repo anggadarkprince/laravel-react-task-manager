@@ -9,6 +9,8 @@ import Help from './statics/Help';
 import Terms from './statics/Terms';
 import Archive from "./archive/Archive";
 import Search from "./search/Search";
+import Login from "./auth/Login";
+import Register from "./auth/Register";
 
 class App extends Component {
 
@@ -16,6 +18,7 @@ class App extends Component {
         super(props);
         let params = new URLSearchParams(window.location.search.substring(1));
         this.state = {
+            isLoggedIn: false,
             q: params.get("q") || '',
         };
     }
@@ -28,13 +31,19 @@ class App extends Component {
         this.setState({q: ''});
     }
 
+    setAuthState(state) {
+        this.setState({ isLoggedIn: state });
+    }
+
     render () {
         return (
             <BrowserRouter>
-                <Header onUpdateKeyword={this.onUpdateKeyword.bind(this)} q={this.state.q} />
+                {this.state.isLoggedIn ? <Header setAuthState={this.setAuthState.bind(this)} onUpdateKeyword={this.onUpdateKeyword.bind(this)} q={this.state.q} /> : null}                
                 <div className='container py-4' style={{minHeight: 'calc(100vh - 175px)'}}>
                     <Switch>
                         <Route exact path='/' component={Dashboard} />
+                        <Route exact path='/login' render={(props) => <Login {...props} setAuthState={this.setAuthState.bind(this)} />} />
+                        <Route exact path='/register' component={Register} />
                         <Route path='/projects' component={Projects} />
                         <Route path='/archive' component={Archive} />
                         <Route path='/help' component={Help} />

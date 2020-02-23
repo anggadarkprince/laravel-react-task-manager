@@ -26,7 +26,7 @@ class ArchiveList extends Component {
     renderView() {
         return (
             <ul className={`list-group list-group-flush border-top${this.state.isLoading ? ' loading-overlay' : ''}`}>
-                {this.state.archives.data.map(project => (
+                {this.state.archives.total ? this.state.archives.data.map(project => (
                     <Link className='list-group-item list-group-item-action d-flex justify-content-between align-items-center'
                           to={`/archive/${project.id}`} key={project.id}>
                         <div>
@@ -34,7 +34,7 @@ class ArchiveList extends Component {
                             <small className='mb-0 text-muted'>{project.description}</small>
                         </div>
                     </Link>
-                ))}
+                )) : <li className='list-group-item'>No archive data available</li>}
             </ul>
         )
     }
@@ -47,7 +47,7 @@ class ArchiveList extends Component {
                     <div className='card-header border-bottom-0 font-weight-bold bg-danger text-white'>ARCHIVED</div>
                     {this.state.isLoading && this.state.archives.length === 0 ? <Loading className='p-3 text-center'/> : this.renderView()}
                 </div>
-                <div className="card-footer border-0">
+                <div className={`card-footer border-0 ${this.state.archives.last_page > 1 ? '' : 'd-none'}`}>
                     <Pagination title='Archive' totalData={this.state.archives.total} totalPage={this.state.archives.last_page} onPageChanged={this.onPageChanged} />
                 </div>
             </div>
