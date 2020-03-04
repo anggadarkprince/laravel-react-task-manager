@@ -74229,19 +74229,27 @@ function (_Component) {
       name: '',
       email: '',
       password: '',
-      password_confirm: '',
+      password_confirmation: '',
+      agree: 0,
       errors: []
     };
     _this.handleFieldChange = _this.handleFieldChange.bind(_assertThisInitialized(_this));
     _this.hasErrorFor = _this.hasErrorFor.bind(_assertThisInitialized(_this));
     _this.renderErrorFor = _this.renderErrorFor.bind(_assertThisInitialized(_this));
+    _this.handleRegister = _this.handleRegister.bind(_assertThisInitialized(_this));
     return _this;
   }
 
   _createClass(Register, [{
     key: "handleFieldChange",
     value: function handleFieldChange(event) {
-      this.setState(_defineProperty({}, event.target.name, event.target.value));
+      if (event.target.name === 'agree') {
+        this.setState({
+          agree: event.target.checked
+        });
+      } else {
+        this.setState(_defineProperty({}, event.target.name, event.target.value));
+      }
     }
   }, {
     key: "hasErrorFor",
@@ -74274,6 +74282,33 @@ function (_Component) {
       }
     }
   }, {
+    key: "handleRegister",
+    value: function handleRegister(event) {
+      var _this2 = this;
+
+      event.preventDefault();
+      this.setState({
+        isLoading: true
+      });
+      var history = this.props.history;
+      var user = {
+        name: this.state.name,
+        email: this.state.email,
+        password: this.state.password,
+        password_confirmation: this.state.password_confirmation,
+        agree: this.state.agree
+      };
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post('/api/register', user).then(function (response) {
+        // redirect to the homepage
+        history.push('/login');
+      })["catch"](function (error) {
+        _this2.setState({
+          isLoading: false,
+          errors: error.response.data.errors
+        });
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -74288,10 +74323,11 @@ function (_Component) {
         className: "mdi mdi-ballot-outline"
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h3", {
         className: "mb-0 text-primary"
-      }, "Register new account"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
+      }, "Register account"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", {
         className: "mb-0 text-muted"
       }, "Task Manager"))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("form", {
-        method: "post"
+        method: "post",
+        onSubmit: this.handleRegister
       }, this.renderErrorFor('general'), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
@@ -74337,12 +74373,12 @@ function (_Component) {
       }), this.renderErrorFor('password')), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "form-group"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
-        htmlFor: "password_confirm"
+        htmlFor: "password_confirmation"
       }, "Confirm Password"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
-        id: "password_confirm",
+        id: "password_confirmation",
         type: "password",
-        className: "form-control ".concat(this.hasErrorFor('password_confirm') ? 'is-invalid' : ''),
-        name: "password_confirm",
+        className: "form-control ".concat(this.hasErrorFor('password_confirmation') ? 'is-invalid' : ''),
+        name: "password_confirmation",
         placeholder: 'Confirm the password',
         required: true,
         maxLength: "50",
@@ -74351,18 +74387,18 @@ function (_Component) {
       }), this.renderErrorFor('password_confirm')), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "form-group auth-control"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
-        className: "custom-control custom-checkbox"
+        className: "custom-control custom-checkbox ".concat(this.hasErrorFor('agree') ? 'is-invalid' : '')
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
         type: "checkbox",
         className: "custom-control-input",
         id: "agree",
         name: "agree",
         value: "1",
-        required: true
+        onChange: this.handleFieldChange
       }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", {
         className: "custom-control-label",
         htmlFor: "agree"
-      }, "I agree to the terms and condition."))), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
+      }, "I agree to the terms and condition.")), this.renderErrorFor('agree')), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("button", {
         className: "btn btn-block btn-primary mb-3",
         disabled: this.state.isLoading
       }, "Register")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
@@ -75869,8 +75905,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /media/angga/Data/Sandbox/php/laravel-react/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /media/angga/Data/Sandbox/php/laravel-react/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! E:\Angga\WORKSPACE\tasksman\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! E:\Angga\WORKSPACE\tasksman\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
