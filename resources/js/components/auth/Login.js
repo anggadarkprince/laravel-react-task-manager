@@ -49,9 +49,26 @@ class Login extends Component {
     handleLogin(event) {
         event.preventDefault();
 
-        this.props.setAuthState(true);
+        this.setState({isLoading: true, errors: []});
 
-        this.props.history.push('/');
+        const user = {
+            email: this.state.email,
+            password: this.state.password,
+        };
+
+        axios.post('/api/login', user)
+            .then(response => {
+                this.setState({isLoading: false});
+                localStorage.setItem('api_token', response.data.api_token);
+                this.props.checkAuthState(true);
+                this.props.history.push('/');
+            })
+            .catch(error => {
+                this.setState({
+                    isLoading: false,
+                    errors: error.response.data.errors
+                })
+            });
     }
 
     render () {

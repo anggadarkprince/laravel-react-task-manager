@@ -19,7 +19,7 @@ class Dashboard extends Component {
                 isLoading: false,
                 statistic: response.data
             })
-        })
+        });
     }
 
     render() {

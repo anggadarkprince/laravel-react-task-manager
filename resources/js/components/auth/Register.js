@@ -59,7 +59,7 @@ class Register extends Component {
     handleRegister (event) {
         event.preventDefault();
 
-        this.setState({isLoading: true});
+        this.setState({isLoading: true, errors: []});
 
         const { history } = this.props;
 
