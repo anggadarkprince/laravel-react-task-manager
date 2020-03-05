@@ -12,3 +12,6 @@
 */
 Route::pattern('path', '[a-zA-Z0-9-/]+');
 Route::view('/{path?}', 'app');
+Route::get('email/verify/{id}/{hash}', function () {
+    return view('app');
+})->name('email.verify');

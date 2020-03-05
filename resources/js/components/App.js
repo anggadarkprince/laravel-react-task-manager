@@ -11,6 +11,7 @@ import Archive from "./archive/Archive";
 import Search from "./search/Search";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
+import Verification from "./auth/Verification";
 
 class App extends Component {
 
@@ -38,12 +39,13 @@ class App extends Component {
     render () {
         return (
             <BrowserRouter>
-                {this.state.isLoggedIn ? <Header setAuthState={this.setAuthState.bind(this)} onUpdateKeyword={this.onUpdateKeyword.bind(this)} q={this.state.q} /> : null}                
+                {this.state.isLoggedIn ? <Header setAuthState={this.setAuthState.bind(this)} onUpdateKeyword={this.onUpdateKeyword.bind(this)} q={this.state.q} /> : null}
                 <div className='container py-4' style={{minHeight: 'calc(100vh - 175px)'}}>
                     <Switch>
                         <Route exact path='/' component={Dashboard} />
                         <Route exact path='/login' render={(props) => <Login {...props} setAuthState={this.setAuthState.bind(this)} />} />
                         <Route exact path='/register' component={Register} />
+                        <Route exact path='/email/verify/:id/:hash' component={Verification} />
                         <Route path='/projects' component={Projects} />
                         <Route path='/archive' component={Archive} />
                         <Route path='/help' component={Help} />
