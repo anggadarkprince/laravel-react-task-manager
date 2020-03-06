@@ -13,6 +13,7 @@ import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Verification from "./auth/Verification";
 import axios from "axios";
+import Loading from "./statics/Loading";
 
 class App extends Component {
 
@@ -20,7 +21,7 @@ class App extends Component {
         super(props);
         let params = new URLSearchParams(window.location.search.substring(1));
         this.state = {
-            authCheck: true,
+            pageReady: false,
             isLoggedIn: false,
             q: params.get("q") || '',
         };
@@ -39,49 +40,83 @@ class App extends Component {
     }
 
     checkAuthState() {
-        const guest = ['/login', '/register'];
-        const apiToken = localStorage.getItem('api_token');
+        const guest = ['/login', '/register', '/email/verify'];
+
+        let storage = sessionStorage;
+        let apiToken = storage.getItem('api_token');
+        if(!apiToken) {
+            storage = localStorage;
+            apiToken = storage.getItem('api_token');
+        }
+
         if(apiToken) {
+            let apiTokenData = JSON.parse(apiToken);
             axios.interceptors.request.use(function (config) {
-                config.headers.Authorization = 'Bearer ' + apiToken;
+                config.headers.Authorization = 'Bearer ' + apiTokenData.token;
                 return config;
             });
+
+            // refresh token when expired
+            /*
+            if (new Date() > new Date(apiTokenData.token_expired_at)) {
+                console.log('expired');
+                axios.post('/api/token/refresh/' + apiTokenData.user_id).then(response => {
+                    if (response.data.id) {
+                        let expiredDate = new Date();
+                        expiredDate.setMinutes(expiredDate.getMinutes() + 10);
+                        const newToken = {
+                            token_expired_at: expiredDate,
+                            token: response.data.api_token,
+                            user_id: response.data.id,
+                        };
+                        localStorage.setItem('api_token', JSON.stringify(newToken));
+                        apiTokenData = newToken;
+                    }
+                })
+            }*/
+
             axios.get('/api/user').then(response => {
-                this.setState({authCheck: false});
                 if (response.data.id) {
-                    this.setAuthState(true);
                     if(guest.includes(window.location.pathname)) {
                         window.location = '/';
+                    } else {
+                        this.setAuthState(true);
+                        this.setState({pageReady: true});
                     }
                 } else {
                     this.setAuthState(false);
+                    window.location = '/';
                 }
             }).catch(error => {
-                console.log(error);
                 this.setAuthState(false);
+                window.location = '/';
             });
         } else {
-            if(!guest.includes(window.location.pathname)) {
+            const resultPath = guest.filter((path) => {
+                return window.location.pathname.startsWith(path);
+            });
+            if(!resultPath.length) {
                 window.location = '/login';
             } else {
-                this.setState({ authCheck: false });
+                this.setState({ pageReady: true });
             }
         }
     }
 
     setAuthState(state) {
-        this.setState({ isLoggedIn: state, authCheck: false });
+        this.setState({isLoggedIn: state});
         if(!state) {
             localStorage.removeItem('api_token');
+            sessionStorage.removeItem('api_token');
         }
     }
 
     render () {
         return (
             <BrowserRouter>
-                {this.state.isLoggedIn ? <Header setAuthState={this.setAuthState.bind(this)} onUpdateKeyword={this.onUpdateKeyword.bind(this)} q={this.state.q} /> : null}
-                {this.state.authCheck ? null : (
+                {this.state.pageReady ? (
                     <React.Fragment>
+                        {this.state.isLoggedIn ? <Header setAuthState={this.setAuthState.bind(this)} onUpdateKeyword={this.onUpdateKeyword.bind(this)} q={this.state.q} /> : null}
                         <div className='container py-4' style={{minHeight: 'calc(100vh - 175px)'}}>
                             <Switch>
                                 <Route exact path='/' component={Dashboard} />
@@ -96,7 +131,7 @@ class App extends Component {
                             </Switch>
                         </div>
                         <Footer />
-                    </React.Fragment>)}
+                    </React.Fragment>) : <div className='text-center p-5'><Loading/></div>}
             </BrowserRouter>
         )
     }

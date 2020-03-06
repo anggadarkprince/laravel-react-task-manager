@@ -9,6 +9,7 @@ class Login extends Component {
             isLoading: false,
             email: '',
             password: '',
+            remember: false,
             errors: []
         };
         this.handleFieldChange = this.handleFieldChange.bind(this);
@@ -17,9 +18,15 @@ class Login extends Component {
     }
 
     handleFieldChange (event) {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
+        if (event.target.name === 'remember') {
+            this.setState({
+                remember: event.target.checked
+            });
+        } else {
+            this.setState({
+                [event.target.name]: event.target.value
+            });
+        }
     }
 
     hasErrorFor (field) {
@@ -59,7 +66,21 @@ class Login extends Component {
         axios.post('/api/login', user)
             .then(response => {
                 this.setState({isLoading: false});
-                localStorage.setItem('api_token', response.data.api_token);
+                let expiredDate = new Date();
+                expiredDate.setMinutes(expiredDate.getMinutes() + 10);
+                if (this.state.remember) {
+                    localStorage.setItem('api_token', JSON.stringify({
+                        token_expired_at: expiredDate,
+                        token: response.data.api_token,
+                        user_id: response.data.id,
+                    }));
+                } else {
+                    sessionStorage.setItem('api_token', JSON.stringify({
+                        token_expired_at: expiredDate,
+                        token: response.data.api_token,
+                        user_id: response.data.id,
+                    }));
+                }
                 this.props.checkAuthState(true);
                 this.props.history.push('/');
             })
@@ -102,7 +123,7 @@ class Login extends Component {
                             <div className="row">
                                 <div className="col">
                                     <div className="custom-control custom-checkbox">
-                                        <input type="checkbox" className="custom-control-input" id="remember" name="remember" value="1"/>
+                                        <input type="checkbox" className="custom-control-input" id="remember" name="remember" value="1" onChange={this.handleFieldChange}/>
                                         <label className="custom-control-label" htmlFor="remember">Remember me</label>
                                     </div>
                                 </div>

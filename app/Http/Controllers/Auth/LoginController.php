@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -70,5 +72,19 @@ class LoginController extends Controller
         if($request->acceptsJson()) {
             return response()->json($user);
         }
+    }
+
+    /**
+     * Update token key to user.
+     *
+     * @param Request $request
+     * @param User $user
+     * @return User
+     */
+    public function refreshToken(User $user, Request $request) {
+        $user->api_token = Str::random(80);
+        $user->update();
+
+        return $user;
     }
 }
