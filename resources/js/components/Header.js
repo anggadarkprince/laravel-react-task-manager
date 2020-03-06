@@ -23,7 +23,7 @@ class Header extends Component {
             this.setState({keyword: this.props.q});
         }
     }
-    
+
     onLogout(e) {
         e.preventDefault();
 
@@ -73,7 +73,7 @@ class Header extends Component {
                                        onChange={(e) => this.setState({keyword: e.target.value})}
                                        placeholder="Search project or task" aria-label="Search"/>
                                 <div className="input-group-append">
-                                    <button className="btn btn-sm btn-outline-success my-2 my-sm-0" type="submit">
+                                    <button className="btn btn-sm btn-outline-success" type="submit">
                                         Search
                                     </button>
                                 </div>
@@ -87,12 +87,12 @@ class Header extends Component {
                                 </a>
                                 <div className="dropdown-menu dropdown-menu-right border-0 shadow"
                                      aria-labelledby="navbarDropdown">
-                                    <a className="dropdown-item" href="#">
+                                    <Link to='/account' className="dropdown-item">
                                         <i className='mdi mdi-account-outline mr-1'/>My Account
-                                    </a>
-                                    <a className="dropdown-item" href="#">
+                                    </Link>
+                                    <Link to='/setting' className="dropdown-item">
                                         <i className='mdi mdi-settings-outline mr-1'/>Setting
-                                    </a>
+                                    </Link>
                                     <div className="dropdown-divider"/>
                                     <a className="dropdown-item" href="/logout" onClick={this.onLogout.bind(this)}>
                                         <i className='mdi mdi-logout mr-1'/>Logout

@@ -16,6 +16,7 @@ import ForgotPassword from "./auth/ForgotPassword";
 import axios from "axios";
 import Loading from "./statics/Loading";
 import ResetPassword from "./auth/ResetPassword";
+import Error404 from "./statics/Error404";
 
 class App extends Component {
 
@@ -136,6 +137,7 @@ class App extends Component {
                                     <Route path='/help' component={Help} />
                                     <Route path='/terms' component={Terms} />
                                     <Route path='/search' render={(props) => <Search {...props} onClearKeyword={this.onClearKeyword.bind(this)} q={this.state.q} />} />
+                                    <Route component={Error404} />
                                 </Switch>
                             </div>
                         </div>
