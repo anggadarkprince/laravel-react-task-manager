@@ -2,28 +2,27 @@ import axios from 'axios'
 import React, { Component } from 'react'
 import {Link} from "react-router-dom";
 
-class Register extends Component {
+class ResetPassword extends Component {
     constructor (props) {
         super(props);
+        const query = new URLSearchParams(props.location.search.substring(1));
         this.state = {
             isLoading: false,
-            name: '',
-            email: '',
+            token: props.match.params.token,
+            email: query.get("email"),
             password: '',
             password_confirmation: '',
-            agree: 0,
             errors: []
         };
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.hasErrorFor = this.hasErrorFor.bind(this);
         this.renderErrorFor = this.renderErrorFor.bind(this);
-        this.handleRegister = this.handleRegister.bind(this);
     }
 
-    handleFieldChange(event) {
-        if (event.target.name === 'agree') {
+    handleFieldChange (event) {
+        if (event.target.name === 'remember') {
             this.setState({
-                agree: event.target.checked
+                remember: event.target.checked
             });
         } else {
             this.setState({
@@ -38,9 +37,9 @@ class Register extends Component {
 
     renderErrorFor (field, className = 'invalid-feedback') {
         if (this.hasErrorFor(field)) {
-            if(field === 'general') {
+            if (field === 'general' || field === 'success') {
                 return (
-                    <div className="alert alert-warning alert-dismissible" role="alert">
+                    <div className={`alert alert-${field === 'success' ? 'success' : 'warning'} alert-dismissible`} role="alert">
                         {this.state.errors[field]}
                         <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
@@ -56,30 +55,34 @@ class Register extends Component {
         }
     }
 
-    handleRegister (event) {
+    handleRecoverPassword(event) {
         event.preventDefault();
 
         this.setState({isLoading: true, errors: []});
 
-        const { history } = this.props;
-
-        const user = {
-            name: this.state.name,
+        const params = {
             email: this.state.email,
+            token: this.state.token,
             password: this.state.password,
-            password_confirmation: this.state.password_confirmation,
-            agree: this.state.agree,
+            password_confirmation: this.state.password_confirmation
         };
-
-        axios.post('/api/register', user)
+        axios.post('/api/password/reset', params)
             .then(response => {
-                // redirect to the homepage
-                history.push('/login')
+                this.setState({
+                    isLoading: false,
+                    errors: {
+                        general: response.data.email,
+                        success: response.data.status,
+                    }
+                });
+                setTimeout(function () {
+                    window.location = '/login';
+                }, 1000);
             })
             .catch(error => {
                 this.setState({
                     isLoading: false,
-                    errors: error.response.data.errors
+                    errors: error.response.data.errors || {general: error.response.data.email || error.response.data.status}
                 })
             })
     }
@@ -88,59 +91,39 @@ class Register extends Component {
         return (
             <div className='row'>
                 <div className='col-sm-6 col-md-4 mx-auto'>
-                    <div className='d-flex align-items-center mb-3'>
-                        <h1 className='display-4 mb-0 mr-2 text-primary'><i className='mdi mdi-ballot-outline' /></h1>
-                        <div>
-                            <h3 className='mb-0'>Register account</h3>
-                            <p className='mb-0 text-muted'>Task Manager</p>
-                        </div>
-                    </div>
-                    <form method='post' onSubmit={this.handleRegister}>
+                    <h3 className='mb-0'>Password Recovery</h3>
+                    <p className='text-muted'>Resetting your credentials</p>
+                    <form method='post' onSubmit={this.handleRecoverPassword.bind(this)}>
                         {this.renderErrorFor('general')}
-                        <div className='form-group'>
-                            <label htmlFor='name'>Name</label>
-                            <input id='name' type='text' className={`form-control ${this.hasErrorFor('name') ? 'is-invalid' : ''}`}
-                                name='name' placeholder={'Your full name'} required maxLength='50'
-                                value={this.state.name} onChange={this.handleFieldChange} />
-                            {this.renderErrorFor('name')}
-                        </div>
+                        {this.renderErrorFor('success')}
                         <div className='form-group'>
                             <label htmlFor='email'>Email</label>
                             <input id='email' type='email' className={`form-control ${this.hasErrorFor('email') ? 'is-invalid' : ''}`}
-                                name='email' placeholder={'Your email address'} required maxLength='50'
+                                name='email' placeholder={'Registered email address'} readOnly required maxLength='50'
                                 value={this.state.email} onChange={this.handleFieldChange} />
                             {this.renderErrorFor('email')}
                         </div>
                         <div className='form-group'>
                             <label htmlFor='password'>Password</label>
                             <input id='password' type='password' className={`form-control ${this.hasErrorFor('password') ? 'is-invalid' : ''}`}
-                                name='password' placeholder={'Your password'} required maxLength='50'
-                                value={this.state.password} onChange={this.handleFieldChange} />
+                                   name='password' placeholder={'Your password'} required maxLength='50'
+                                   value={this.state.password} onChange={this.handleFieldChange} />
                             {this.renderErrorFor('password')}
                         </div>
                         <div className='form-group'>
                             <label htmlFor='password_confirmation'>Confirm Password</label>
                             <input id='password_confirmation' type='password' className={`form-control ${this.hasErrorFor('password_confirmation') ? 'is-invalid' : ''}`}
-                                name='password_confirmation' placeholder={'Confirm the password'} required maxLength='50'
-                                value={this.state.password_confirmation} onChange={this.handleFieldChange} />
+                                   name='password_confirmation' placeholder={'Confirm the password'} required maxLength='50'
+                                   value={this.state.password_confirmation} onChange={this.handleFieldChange} />
                             {this.renderErrorFor('password_confirmation')}
                         </div>
-                        <div className="form-group auth-control">
-                            <div className={`custom-control custom-checkbox ${this.hasErrorFor('agree') ? 'is-invalid' : ''}`}>
-                                <input type="checkbox" className="custom-control-input" id="agree" name="agree" value="1" onChange={this.handleFieldChange} />
-                                <label className="custom-control-label" htmlFor="agree">I agree to the terms and condition.</label>
-                            </div>
-                            {this.renderErrorFor('agree')}
-                        </div>
                         <button className='btn btn-block btn-primary mb-3' disabled={this.state.isLoading}>
-                            Register
+                            Reset My Password
                         </button>
                     </form>
                     <div className="text-center auth-control">
-                        <span>Already have and account? </span>
-                        <Link to="/login">
-                            Sign In
-                        </Link>
+                        <span>Remember password? </span>
+                        <Link to="/login">Sign In</Link>
                     </div>
                 </div>
             </div>
@@ -148,4 +131,4 @@ class Register extends Component {
     }
 }
 
-export default Register
+export default ResetPassword

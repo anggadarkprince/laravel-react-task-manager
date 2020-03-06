@@ -15,3 +15,6 @@ Route::view('/{path?}', 'app');
 Route::get('email/verify/{id}/{hash}', function () {
     return view('app');
 })->name('email.verify');
+Route::get('password/reset/{token}', function () {
+    return view('app');
+})->name('account.reset');

@@ -12,8 +12,10 @@ import Search from "./search/Search";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Verification from "./auth/Verification";
+import ForgotPassword from "./auth/ForgotPassword";
 import axios from "axios";
 import Loading from "./statics/Loading";
+import ResetPassword from "./auth/ResetPassword";
 
 class App extends Component {
 
@@ -40,7 +42,7 @@ class App extends Component {
     }
 
     checkAuthState() {
-        const guest = ['/login', '/register', '/email/verify'];
+        const guest = ['/login', '/register', '/forgot-password', '/password/reset', '/email/verify'];
 
         let storage = sessionStorage;
         let apiToken = storage.getItem('api_token');
@@ -77,7 +79,10 @@ class App extends Component {
 
             axios.get('/api/user').then(response => {
                 if (response.data.id) {
-                    if(guest.includes(window.location.pathname)) {
+                    const resultPath = guest.filter((path) => {
+                        return window.location.pathname.startsWith(path);
+                    });
+                    if(resultPath.length) {
                         window.location = '/';
                     } else {
                         this.setAuthState(true);
@@ -117,18 +122,22 @@ class App extends Component {
                 {this.state.pageReady ? (
                     <React.Fragment>
                         {this.state.isLoggedIn ? <Header setAuthState={this.setAuthState.bind(this)} onUpdateKeyword={this.onUpdateKeyword.bind(this)} q={this.state.q} /> : null}
-                        <div className='container py-4' style={{minHeight: 'calc(100vh - 175px)'}}>
-                            <Switch>
-                                <Route exact path='/' component={Dashboard} />
-                                <Route exact path='/login' render={(props) => <Login {...props} checkAuthState={this.checkAuthState.bind(this)} />} />
-                                <Route exact path='/register' component={Register} />
-                                <Route exact path='/email/verify/:id/:hash' component={Verification} />
-                                <Route path='/projects' component={Projects} />
-                                <Route path='/archive' component={Archive} />
-                                <Route path='/help' component={Help} />
-                                <Route path='/terms' component={Terms} />
-                                <Route path='/search' render={(props) => <Search {...props} onClearKeyword={this.onClearKeyword.bind(this)} q={this.state.q} />} />
-                            </Switch>
+                        <div className='wrapper'>
+                            <div className='container py-4' style={{minHeight: 'calc(100vh - 175px)'}}>
+                                <Switch>
+                                    <Route exact path='/' component={Dashboard} />
+                                    <Route exact path='/login' render={(props) => <Login {...props} checkAuthState={this.checkAuthState.bind(this)} />} />
+                                    <Route exact path='/forgot-password' component={ForgotPassword} />
+                                    <Route exact path='/password/reset/:token' component={ResetPassword} />
+                                    <Route exact path='/register' component={Register} />
+                                    <Route exact path='/email/verify/:id/:hash' component={Verification} />
+                                    <Route path='/projects' component={Projects} />
+                                    <Route path='/archive' component={Archive} />
+                                    <Route path='/help' component={Help} />
+                                    <Route path='/terms' component={Terms} />
+                                    <Route path='/search' render={(props) => <Search {...props} onClearKeyword={this.onClearKeyword.bind(this)} q={this.state.q} />} />
+                                </Switch>
+                            </div>
                         </div>
                         <Footer />
                     </React.Fragment>) : <div className='text-center p-5'><Loading/></div>}

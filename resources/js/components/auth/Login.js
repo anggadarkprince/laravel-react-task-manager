@@ -99,7 +99,7 @@ class Login extends Component {
                     <div className='d-flex align-items-center mb-3'>
                         <h1 className='display-4 mb-0 mr-2 text-primary'><i className='mdi mdi-ballot-outline' /></h1>
                         <div>
-                            <h3 className='mb-0 text-primary'>Task Manager</h3>
+                            <h3 className='mb-0'>Task Manager</h3>
                             <p className='mb-0 text-muted'>Manage your todo list is simple way</p>
                         </div>
                     </div>
