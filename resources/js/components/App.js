@@ -17,6 +17,7 @@ import axios from "axios";
 import Loading from "./statics/Loading";
 import ResetPassword from "./auth/ResetPassword";
 import Error404 from "./statics/Error404";
+import Account from "./account/Account";
 
 class App extends Component {
 
@@ -134,6 +135,7 @@ class App extends Component {
                                     <Route exact path='/email/verify/:id/:hash' component={Verification} />
                                     <Route path='/projects' component={Projects} />
                                     <Route path='/archive' component={Archive} />
+                                    <Route path='/account' component={Account} />
                                     <Route path='/help' component={Help} />
                                     <Route path='/terms' component={Terms} />
                                     <Route path='/search' render={(props) => <Search {...props} onClearKeyword={this.onClearKeyword.bind(this)} q={this.state.q} />} />

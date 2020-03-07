@@ -32,5 +32,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::put('tasks/{task}', 'TaskController@markAsCompleted');
     Route::delete('tasks/{task}', 'TaskController@destroy');
     Route::post('token/refresh/{user}', 'Auth\LoginController@refreshToken');
+    Route::post('account', 'AccountController@update');
 });
 Auth::routes(['verify' => true]);
