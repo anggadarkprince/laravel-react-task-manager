@@ -71,7 +71,7 @@ class SingleProject extends Component {
     handleAddNewTask (event) {
         event.preventDefault();
 
-        this.setState({isLoading: true});
+        this.setState({isLoading: true, errors: []});
 
         const task = {
             title: this.state.title,

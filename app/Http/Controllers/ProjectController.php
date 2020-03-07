@@ -14,11 +14,12 @@ class ProjectController extends Controller
 {
     /**
      * Show incomplete project
+     * @param Request $request
      * @return mixed
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::where('is_completed', false)
+        $projects = $request->user()->projects()->where('is_completed', false)
             ->orderBy('created_at', 'desc')
             ->withCount([
                 'tasks AS all_task_count',
@@ -33,11 +34,12 @@ class ProjectController extends Controller
 
     /**
      * Show completed project
+     * @param Request $request
      * @return mixed
      */
-    public function archive()
+    public function archive(Request $request)
     {
-        $projects = Project::where('is_completed', true)
+        $projects = $request->user()->projects()->where('is_completed', true)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -58,7 +60,7 @@ class ProjectController extends Controller
         ]);
 
         try {
-            $project = Project::create([
+            $project = $request->user()->projects()->create([
                 'name' => $validatedData['name'],
                 'description' => $validatedData['description'],
             ]);

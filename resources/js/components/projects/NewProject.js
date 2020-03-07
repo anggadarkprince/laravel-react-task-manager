@@ -26,7 +26,7 @@ class NewProject extends Component {
     handleCreateNewProject (event) {
         event.preventDefault();
 
-        this.setState({isLoading: true});
+        this.setState({isLoading: true, errors: []});
 
         const { history } = this.props;
 
@@ -89,7 +89,7 @@ class NewProject extends Component {
                         <div className='form-group'>
                             <label htmlFor='name'>Project name</label>
                             <input id='name' type='text' className={`form-control ${this.hasErrorFor('name') ? 'is-invalid' : ''}`}
-                                   name='name' placeholder={'Input project title'}
+                                   name='name' placeholder={'Input project title'} readOnly={this.state.isLoading}
                                    value={this.state.name} onChange={this.handleFieldChange}/>
                             {this.renderErrorFor('name')}
                         </div>
@@ -97,7 +97,7 @@ class NewProject extends Component {
                             <label htmlFor='description'>Project description</label>
                             <textarea
                                 id='description' className={`form-control ${this.hasErrorFor('description') ? 'is-invalid' : ''}`}
-                                name='description' rows='5' placeholder={'Detail about project'}
+                                name='description' rows='5' placeholder={'Detail about project'} readOnly={this.state.isLoading}
                                 value={this.state.description} onChange={this.handleFieldChange}/>
                             {this.renderErrorFor('description')}
                         </div>

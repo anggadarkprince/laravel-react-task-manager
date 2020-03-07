@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSettingsTable extends Migration
+class AlterProjectsAddUserId extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateSettingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('settings', function (Blueprint $table) {
-            $table->bigIncrements('id')->autoIncrement();
-            $table->unsignedBigInteger('user_id');
-            $table->string('key');
-            $table->string('value');
-            $table->timestamps();
+        Schema::disableForeignKeyConstraints();
+        Schema::table('projects', function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id')->nullable()->after('id');
             $table->foreign('user_id')->references('id')->on('users')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
+        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -32,6 +30,8 @@ class CreateSettingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('settings');
+        Schema::table('projects', function (Blueprint $table) {
+            $table->dropColumn('user_id');
+        });
     }
 }

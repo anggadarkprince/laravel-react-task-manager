@@ -44,6 +44,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Setting::class);
     }
 
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+
     /**
      * Send the email verification notification.
      *
