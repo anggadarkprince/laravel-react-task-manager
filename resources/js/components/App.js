@@ -47,12 +47,7 @@ class App extends Component {
     checkAuthState() {
         const guest = ['/login', '/register', '/forgot-password', '/password/reset', '/email/verify'];
 
-        let storage = sessionStorage;
-        let apiToken = storage.getItem('api_token');
-        if(!apiToken) {
-            storage = localStorage;
-            apiToken = storage.getItem('api_token');
-        }
+        const apiToken = localStorage.getItem('api_token');
 
         if(apiToken) {
             let apiTokenData = JSON.parse(apiToken);
@@ -60,6 +55,12 @@ class App extends Component {
                 config.headers.Authorization = 'Bearer ' + apiTokenData.token;
                 return config;
             });
+
+            window.onbeforeunload = () => {
+                if (!apiTokenData.remember) {
+                    this.setAuthState(false);
+                }
+            };
 
             // refresh token when expired
             /*
@@ -115,7 +116,6 @@ class App extends Component {
         this.setState({isLoggedIn: state});
         if(!state) {
             localStorage.removeItem('api_token');
-            sessionStorage.removeItem('api_token');
         }
     }
 

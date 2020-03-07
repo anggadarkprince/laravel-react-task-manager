@@ -68,19 +68,12 @@ class Login extends Component {
                 this.setState({isLoading: false});
                 let expiredDate = new Date();
                 expiredDate.setMinutes(expiredDate.getMinutes() + 10);
-                if (this.state.remember) {
-                    localStorage.setItem('api_token', JSON.stringify({
-                        token_expired_at: expiredDate,
-                        token: response.data.api_token,
-                        user_id: response.data.id,
-                    }));
-                } else {
-                    sessionStorage.setItem('api_token', JSON.stringify({
-                        token_expired_at: expiredDate,
-                        token: response.data.api_token,
-                        user_id: response.data.id,
-                    }));
-                }
+                localStorage.setItem('api_token', JSON.stringify({
+                    token_expired_at: expiredDate,
+                    token: response.data.api_token,
+                    user_id: response.data.id,
+                    remember: this.state.remember,
+                }));
                 this.props.checkAuthState(true);
                 this.props.history.push('/');
             })
