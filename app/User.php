@@ -39,6 +39,11 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
+    public function settings()
+    {
+        return $this->hasMany(Setting::class);
+    }
+
     /**
      * Send the email verification notification.
      *

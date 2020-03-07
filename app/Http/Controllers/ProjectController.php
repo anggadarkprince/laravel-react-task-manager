@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ProjectCreated;
 use App\Project;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectController extends Controller
 {
@@ -61,10 +63,15 @@ class ProjectController extends Controller
                 'description' => $validatedData['description'],
             ]);
 
+            if ($request->user()->settings()->where(['key' => 'notify_when_new_project_created', 'value' => 1])->count()) {
+                Mail::to($request->user())->send(new ProjectCreated($project));
+            }
+
             return response()->json($project);
         } catch (QueryException $e) {
             return response()->json([
                 'errors' => [
+                    'message' => $e->getMessage(),
                     'general' => 'Something went wrong, try again or contact administrator'
                 ]
             ], 500);

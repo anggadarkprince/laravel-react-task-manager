@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import axios from "axios";
 import Header from './Header';
 import Footer from './Footer';
-import Projects from './projects/Projects';
-import Dashboard from "./home/Dashboard";
 import Help from './statics/Help';
 import Terms from './statics/Terms';
+import Loading from "./statics/Loading";
+import Error404 from "./statics/Error404";
+import Projects from './projects/Projects';
+import Dashboard from "./home/Dashboard";
 import Archive from "./archive/Archive";
 import Search from "./search/Search";
 import Login from "./auth/Login";
 import Register from "./auth/Register";
 import Verification from "./auth/Verification";
 import ForgotPassword from "./auth/ForgotPassword";
-import axios from "axios";
-import Loading from "./statics/Loading";
 import ResetPassword from "./auth/ResetPassword";
-import Error404 from "./statics/Error404";
 import Account from "./account/Account";
+import Setting from "./setting/Setting";
 
 class App extends Component {
 
@@ -136,6 +137,7 @@ class App extends Component {
                                     <Route path='/projects' component={Projects} />
                                     <Route path='/archive' component={Archive} />
                                     <Route path='/account' component={Account} />
+                                    <Route path='/setting' component={Setting} />
                                     <Route path='/help' component={Help} />
                                     <Route path='/terms' component={Terms} />
                                     <Route path='/search' render={(props) => <Search {...props} onClearKeyword={this.onClearKeyword.bind(this)} q={this.state.q} />} />

@@ -36,15 +36,9 @@ class Account extends Component {
     }
 
     handleFieldChange (event) {
-        if (event.target.name === 'remember') {
-            this.setState({
-                remember: event.target.checked
-            });
-        } else {
-            this.setState({
-                [event.target.name]: event.target.value
-            });
-        }
+        this.setState({
+            [event.target.name]: event.target.value
+        });
     }
 
     hasErrorFor (field) {

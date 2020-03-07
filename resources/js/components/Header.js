@@ -71,7 +71,7 @@ class Header extends Component {
                             <div className='input-group'>
                                 <input className="form-control form-control-sm" type="search" value={this.state.keyword}
                                        onChange={(e) => this.setState({keyword: e.target.value})}
-                                       placeholder="Search project or task" aria-label="Search"/>
+                                       placeholder="Search project or task" aria-label="Search" required/>
                                 <div className="input-group-append">
                                     <button className="btn btn-sm btn-outline-success" type="submit">
                                         Search
