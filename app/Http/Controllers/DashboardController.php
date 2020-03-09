@@ -9,19 +9,21 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     /**
-     * Show statistic project
+     * Show statistic project.
+     *
+     * @param Request $request
      * @return mixed
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::where('is_completed', false)->count();
-        $tasks = Task::join('projects', 'projects.id', '=', 'tasks.project_id')
+        $projects = $request->user()->projects()->where('is_completed', false)->count();
+        $tasks = $request->user()->tasks()
             ->where([
                 'projects.is_completed' => false,
                 'tasks.is_completed' => false,
             ])
             ->count();
-        $archived = Project::where('is_completed', true)->count();
+        $archived = $request->user()->projects()->where('is_completed', true)->count();
 
         $data = collect([
             'projects' => $projects,

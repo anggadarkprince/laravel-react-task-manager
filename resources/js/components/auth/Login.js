@@ -67,7 +67,7 @@ class Login extends Component {
             .then(response => {
                 this.setState({isLoading: false});
                 let expiredDate = new Date();
-                expiredDate.setMinutes(expiredDate.getMinutes() + 10);
+                expiredDate.setMinutes(expiredDate.getMinutes() + 60);
                 localStorage.setItem('api_token', JSON.stringify({
                     token_expired_at: expiredDate,
                     token: response.data.api_token,

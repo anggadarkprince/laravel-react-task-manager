@@ -51,16 +51,30 @@ class App extends Component {
 
         if(apiToken) {
             let apiTokenData = JSON.parse(apiToken);
-            axios.interceptors.request.use(function (config) {
-                config.headers.Authorization = 'Bearer ' + apiTokenData.token;
-                return config;
-            });
 
-            window.onbeforeunload = () => {
+            // token expired
+            let isExpired = false;
+            if (new Date() > new Date(apiTokenData.token_expired_at)) {
                 if (!apiTokenData.remember) {
                     this.setAuthState(false);
+                    isExpired = true;
+                } else {
+                    let expiredDate = new Date();
+                    (new Date()).setMinutes(expiredDate.getMinutes() + 60);
+                    apiTokenData.token_expired_at = expiredDate;
                 }
-            };
+            } else {
+                let expiredDate = new Date();
+                expiredDate.setMinutes(expiredDate.getMinutes() + 60);
+                apiTokenData.token_expired_at = expiredDate;
+            }
+
+            if(!isExpired) {
+                axios.interceptors.request.use(function (config) {
+                    config.headers.Authorization = 'Bearer ' + apiTokenData.token;
+                    return config;
+                });
+            }
 
             // refresh token when expired
             /*
@@ -91,6 +105,7 @@ class App extends Component {
                     } else {
                         this.setAuthState(true);
                         this.setState({pageReady: true});
+                        localStorage.setItem('api_token', JSON.stringify(apiTokenData));
                     }
                 } else {
                     this.setAuthState(false);
